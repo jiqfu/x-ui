@@ -1,5 +1,4 @@
 # X-UI
-CN|[EN](./README_EN.md)  
 
 > 该项目仅作为学习golang的实验性项目，请勿用于生产环境
 
@@ -22,20 +21,20 @@ CN|[EN](./README_EN.md)
 - Telegram bot通知、控制功能
 - 更多高级配置项，详见面板 
 
-:bulb:具体**使用、配置细节以及问题排查**可参考[WIKI](https://github.com/FranzKafkaYu/x-ui/wiki)
+:bulb:具体**使用、配置细节以及问题排查**可参考[WIKI](https://github.com/jiqfu/x-ui/wiki)
 # 一键安装
 在安装前请确保你的系统支持`bash`环境,且系统网络正常  
 
 &#x26A1;从原版升级也可使用该命令，数据不会丢失&#x26A1;
 
 ```
-bash <(curl -Ls https://raw.githubusercontent.com/FranzKafkaYu/x-ui/master/install.sh)
+bash <(curl -Ls https://raw.githubusercontent.com/jiqfu/x-ui/master/install.sh)
 ```  
 
 如果你的系统版本比较老旧，安装后报错：`GLIBC_2.28 not found`，请使用如下命令安装0.3.3.9版本
 
 ```
-bash <(curl -Ls https://raw.githubusercontent.com/FranzKafkaYu/x-ui/master/install.sh) 0.3.3.9  
+bash <(curl -Ls https://raw.githubusercontent.com/jiqfu/x-ui/master/install.sh) 0.3.3.9  
 ```
 
 但该版本会在切换xray内核时报错，建议尽快升级系统  
@@ -159,6 +158,7 @@ xray 状态: 运行
 # 致谢
 
 - [vaxilu/x-ui](https://github.com/vaxilu/x-ui)
+- [FranzKafkaYu/x-ui](https://github.com/FranzKafkaYu/x-ui)
 - [XTLS/Xray-core](https://github.com/XTLS/Xray-core)
 - [telegram-bot-api](https://github.com/go-telegram-bot-api/telegram-bot-api)
 
