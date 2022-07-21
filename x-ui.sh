@@ -94,7 +94,7 @@ before_show_menu() {
 }
 
 install() {
-    bash <(curl -Ls https://raw.githubusercontent.com/vaxilu/x-ui/master/install.sh)
+    bash <(curl -Ls https://raw.githubusercontent.com/FranzKafkaYu/x-ui/master/install.sh)
     if [[ $? == 0 ]]; then
         if [[ $# == 0 ]]; then
             start
@@ -113,7 +113,7 @@ update() {
         fi
         return 0
     fi
-    bash <(curl -Ls https://raw.githubusercontent.com/vaxilu/x-ui/master/install.sh)
+    bash <(curl -Ls https://raw.githubusercontent.com/FranzKafkaYu/x-ui/master/install.sh)
     if [[ $? == 0 ]]; then
         LOGI "更新完成，已自动重启面板 "
         exit 0
@@ -302,7 +302,7 @@ install_bbr() {
 }
 
 update_shell() {
-    wget -O /usr/bin/x-ui -N --no-check-certificate https://github.com/vaxilu/x-ui/raw/master/x-ui.sh
+    wget -O /usr/bin/x-ui -N --no-check-certificate https://github.com/FranzKafkaYu/x-ui/raw/master/x-ui.sh
     if [[ $? != 0 ]]; then
         echo ""
         LOGE "下载脚本失败，请检查本机能否连接 Github"
@@ -437,7 +437,17 @@ ssl_cert_issue() {
         fi
         LOGD "请设置域名:"
         read -p "Input your domain here:" CF_Domain
-        LOGD "你的域名设置为:${CF_Domain}"
+        LOGD "你的域名设置为:${CF_Domain},正在进行域名合法性校验..."
+        #here we need to judge whether there exists cert already
+        local currentCert=$(~/.acme.sh/acme.sh --list | tail -1 | awk '{print $1}')
+        if [ ${currentCert} == ${CF_Domain} ]; then
+            local certInfo=$(~/.acme.sh/acme.sh --list)
+            LOGE "域名合法性校验失败,当前环境已有对应域名证书,不可重复申请,当前证书详情:"
+            LOGI "$certInfo"
+            exit 1
+        else
+            LOGI "证书有效性校验通过..."
+        fi
         LOGD "请设置API密钥:"
         read -p "Input your key here:" CF_GlobalKey
         LOGD "你的API密钥为:${CF_GlobalKey}"
