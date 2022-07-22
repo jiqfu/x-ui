@@ -1,8 +1,10 @@
 package controller
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"log"
 	"strconv"
 	"x-ui/database/model"
 	"x-ui/logger"
@@ -28,6 +30,7 @@ func (a *InboundController) initRouter(g *gin.RouterGroup) {
 
 	g.POST("/list", a.getInbounds)
 	g.POST("/add", a.addInbound)
+	g.POST("/import", a.importInbound)
 	g.POST("/del/:id", a.delInbound)
 	g.POST("/update/:id", a.updateInbound)
 }
@@ -68,6 +71,42 @@ func (a *InboundController) addInbound(c *gin.Context) {
 	inbound.Tag = fmt.Sprintf("inbound-%v", inbound.Port)
 	err = a.inboundService.AddInbound(inbound)
 	jsonMsg(c, "添加", err)
+	if err == nil {
+		a.xrayService.SetToNeedRestart()
+	}
+}
+
+func (a *InboundController) importInbound(c *gin.Context) {
+	_, file, err := c.Request.FormFile("file")
+	if err != nil {
+		log.Printf("Error when try to get file: %v", err)
+	}
+	//file.Header.Get("Content-Type")获取上传文件的类型
+	if file.Header.Get("Content-Type") != "application/json" {
+		jsonMsg(c, "只允许上json", err)
+		return
+	}
+	var inbounds []*model.Inbound
+	// 创建json解码器
+	open, err := file.Open()
+	if err != nil {
+		jsonMsg(c, "文件打开失败", err)
+		return
+	}
+	decoder := json.NewDecoder(open)
+	err = decoder.Decode(&inbounds)
+	if err != nil {
+		jsonMsg(c, "文件打开失败", err)
+		return
+	}
+	user := session.GetLoginUser(c)
+	for _, inbound := range inbounds {
+		inbound.UserId = user.Id
+		inbound.Enable = true
+		inbound.Tag = fmt.Sprintf("inbound-%v", inbound.Port)
+	}
+	err = a.inboundService.AddInbounds(inbounds)
+	jsonMsg(c, "导入", err)
 	if err == nil {
 		a.xrayService.SetToNeedRestart()
 	}

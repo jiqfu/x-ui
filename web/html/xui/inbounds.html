@@ -45,9 +45,17 @@
                     <a-card hoverable>
                         <div slot="title">
                             <a-button type="primary" icon="plus" @click="openAddInbound"></a-button>
-                            <a-button type="primary" size="large" @click="configExport">
-                                导出
+                            <a-button type="primary" icon="download" @click="configExport">
                             </a-button>
+                            <a-upload
+                                    name="file"
+                                    multiple="true"
+                                    action="/xui/inbound/import"
+                                    @change="handleChange"
+                                    accept=".json"
+                            >
+                                <a-button type="primary" icon="upload"></a-button>
+                            </a-upload>
                         </div>
 
                         <!--    <a-input v-model="searchKey" placeholder="搜索" autofocus style="max-width: 300px"></a-input>-->
@@ -283,6 +291,16 @@
                 var content = JSON.stringify(this.inbounds);
                 var blob = new Blob([content ], {type: "text/plain;charset=utf-8"});
                 FileSaver.saveAs(blob, "config.json");
+            },
+            handleChange(info) {
+                if (info.file.status !== 'uploading') {
+                    console.log(info.file, info.fileList);
+                }
+                if (info.file.status === 'done') {
+                    this.$message.success(`${info.file.name} 导入成功`);
+                } else if (info.file.status === 'error') {
+                    this.$message.error(`${info.file.name} 导入成功`);
+                }
             },
             async updateInbound(inbound, dbInbound) {
                 const data = {
