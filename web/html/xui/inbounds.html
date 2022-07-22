@@ -193,6 +193,7 @@
             inbounds: [],
             dbInbounds: [],
             searchKey: '',
+            config:[],
         },
         methods: {
             loading(spinning=true) {
@@ -208,6 +209,7 @@
                 this.setInbounds(msg.obj);
             },
             setInbounds(dbInbounds) {
+                this.config=dbInbounds;
                 this.inbounds.splice(0);
                 this.dbInbounds.splice(0);
                 for (const inbound of dbInbounds) {
@@ -288,7 +290,7 @@
                 await this.submit('/xui/inbound/add', data, inModal);
             },
             configExport() {
-                var content = JSON.stringify(this.inbounds);
+                var content = JSON.stringify(this.config);
                 var blob = new Blob([content ], {type: "text/plain;charset=utf-8"});
                 saveAs(blob, "config.json");
             },
@@ -300,6 +302,7 @@
                     this.$message.success(`${info.file.name} 导入成功`);
                 } else if (info.file.status === 'error') {
                     this.$message.error(`${info.file.name} 导入成功`);
+                    this.getDBInbounds();
                 }
             },
             async updateInbound(inbound, dbInbound) {
