@@ -290,7 +290,7 @@
             configExport() {
                 var content = JSON.stringify(this.inbounds);
                 var blob = new Blob([content ], {type: "text/plain;charset=utf-8"});
-                FileSaver.saveAs(blob, "config.json");
+                saveAs(blob, "config.json");
             },
             handleChange(info) {
                 if (info.file.status !== 'uploading') {
